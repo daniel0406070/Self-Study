@@ -16,7 +16,7 @@ complex complex_add(complex a, complex b);
 complex complex_sub(complex a, complex b);
 complex complex_mul(complex a, complex b);
 complex complex_div(complex a, complex b);
-
+//nn
 void FFT(cptr v,complex w, int len){ 
     if (len == 1) return;
 
