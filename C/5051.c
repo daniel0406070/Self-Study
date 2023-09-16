@@ -11,7 +11,7 @@ typedef struct complex{
     double real;
     double imag;
 }complex;
-
+//nn
 complex complex_add(complex a, complex b);
 complex complex_sub(complex a, complex b);
 complex complex_mul(complex a, complex b);
