@@ -14,7 +14,7 @@ typedef struct complex{
 
 typedef struct tns *tnsptr;
 typedef struct tns{
-    cptr a[6];
+    cptr a[4];
 }tns;
 
 complex complex_add(complex a, complex b);
@@ -61,108 +61,83 @@ void FFT(cptr v,int inv, int len){
 }
 
 
-tnsptr mut(cptr a1, cptr a2, cptr a3, cptr b1, cptr b2, cptr b3, int len_a , int len_b){  
+tnsptr mut(cptr a1, cptr a2, cptr b1, cptr b2, int len_a , int len_b){  
     int n = 1;
     while(n < len_a+1 || n < len_b+1) n *= 2;
     n *= 2;
     a1 = (cptr)realloc(a1, sizeof(complex) * n);
     a2 = (cptr)realloc(a2, sizeof(complex) * n);
-    a3 = (cptr)realloc(a3, sizeof(complex) * n);
     b1 = (cptr)realloc(b1, sizeof(complex) * n);
     b2 = (cptr)realloc(b2, sizeof(complex) * n);
-    b3 = (cptr)realloc(b3, sizeof(complex) * n);
     memset(a1+len_a, 0, sizeof(complex) * (n - len_a));
     memset(a2+len_a, 0, sizeof(complex) * (n - len_a));
-    memset(a3+len_a, 0, sizeof(complex) * (n - len_a));
     memset(b1+len_b, 0, sizeof(complex) * (n - len_b));
     memset(b2+len_b, 0, sizeof(complex) * (n - len_b));
-    memset(b3+len_b, 0, sizeof(complex) * (n - len_b));
     
     cptr c1 = (cptr)malloc(sizeof(complex) * n);
     cptr c2 = (cptr)malloc(sizeof(complex) * n);
     cptr c3 = (cptr)malloc(sizeof(complex) * n);
-    cptr c4 = (cptr)malloc(sizeof(complex) * n);
-    cptr c5 = (cptr)malloc(sizeof(complex) * n);
 
     FFT(a1, 0, n);
     FFT(a2, 0, n);
-    FFT(a3, 0, n);
     FFT(b1, 0, n);
     FFT(b2, 0, n);
-    FFT(b3, 0, n);
 
     for(int i=0; i<n; i++){
         c1[i] = complex_mul(a1[i], b1[i]);
         c2[i] = complex_add(complex_mul(a1[i], b2[i]), complex_mul(a2[i], b1[i]));
-        c3[i] = complex_add(complex_mul(a1[i], b3[i]), complex_mul(a3[i], b1[i]));
-        c3[i] = complex_add(c3[i], complex_mul(a2[i], b2[i]));
-        c4[i] = complex_add(complex_mul(a2[i], b3[i]), complex_mul(a3[i], b2[i]));
-        c5[i] = complex_mul(a3[i], b3[i]);
+        c3[i] = complex_mul(a2[i], b2[i]);
     }
 
     FFT(c1, 1, n);
     FFT(c2, 1, n);
     FFT(c3, 1, n);
-    FFT(c4, 1, n);
-    FFT(c5, 1, n);
 
     free(a1);
     free(a2);
-    free(a3);
     free(b1);
     free(b2);
-    free(b3);
 
     tnsptr c = (tnsptr)malloc(sizeof(tns));
     c->a[0] = c1;
     c->a[1] = c2;
     c->a[2] = c3;
-    c->a[3] = c4;
-    c->a[4] = c5;
 
     return c;
 }
 
 int main(){
 	int n,m;
-	scanf("%d%d",&n,&m);
-    n++;
-    m++;
-    // n=1000000;
-    // m=1000000;
+	// scanf("%d%d",&n,&m);
+    // n++;
+    // m++;
+    n=1000000;
+    m=1000000;
 
     cptr a1= (cptr)malloc(sizeof(complex) * n);
     cptr a2= (cptr)malloc(sizeof(complex) * n);
-    cptr a3= (cptr)malloc(sizeof(complex) * n);
 
     cptr b1= (cptr)malloc(sizeof(complex) * m);
     cptr b2= (cptr)malloc(sizeof(complex) * m);
-    cptr b3= (cptr)malloc(sizeof(complex) * m);
 
     int tmp;
     for (int i = 0; i < n; ++i){
-        scanf("%d",&tmp);
-        // tmp=1000000;
-        a1[i].real = tmp&255;
-        tmp>>=8;
-        a2[i].real = tmp&255;
-        tmp>>=8;
-        a3[i].real = tmp&255;
+        // scanf("%d",&tmp);
+        tmp=1000000;
+        a1[i].real = tmp&1023;
+        tmp>>=10;
+        a2[i].real = tmp&1023;
         a1[i].imag = 0;
         a2[i].imag = 0;
-        a3[i].imag = 0;
     }
     for (int i = 0; i < m; ++i){
-        scanf("%d",&tmp);
-        // tmp=1000000;
-        b1[i].real = tmp&255;
-        tmp>>=8;
-        b2[i].real = tmp&255;
-        tmp>>=8;
-        b3[i].real = tmp&255;
+        // scanf("%d",&tmp);
+        tmp=1000000;
+        b1[i].real = tmp&1023;
+        tmp>>=10;
+        b2[i].real = tmp&1023;
         b1[i].imag = 0;
         b2[i].imag = 0;
-        b3[i].imag = 0;
     }
     // for (int i = 0; i < n; ++i){
     // 	printf("%d ",(int)a[i].real);
@@ -173,29 +148,23 @@ int main(){
     // }
     // printf("\n");
 
-    tns *c = mut(a1, a2, a3, b1, b2, b3, n, m);
+    tns *c = mut(a1, a2, b1, b2, n, m);
 
     cptr c1 = c->a[0];
     cptr c2 = c->a[1];
     cptr c3 = c->a[2];
-    cptr c4 = c->a[3];
-    cptr c5 = c->a[4];
 
-    long long int d1=0,d2=0,d3=0,d4=0,d5=0;
+    long long int d1=0,d2=0,d3=0;
     
     for (int i = 0; i < n+m-1; ++i){
     	d1^= (long long int)c1[i].real;
         d2^= (long long int)c2[i].real;
         d3^= (long long int)c3[i].real;
-        d4^= (long long int)c4[i].real;
-        d5^= (long long int)c5[i].real;
     }
 
     long long int res=d1;
-    res+=d2<<8;
-    res+=d3<<16;
-    res+=d4<<24;
-    res+=d5<<32;
+    res+=d2<<10;
+    res+=d3<<20;
     
     printf("%lld\n",res);
 
