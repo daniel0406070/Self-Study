@@ -3,18 +3,19 @@
 #include <string.h>
 #include <math.h>
 #include <malloc.h>
+#define test 0
 
 const double PI = acos(-1);
 
 typedef struct complex *cptr;
 typedef struct complex{
-    double real;
-    double imag;
+    long double real;
+    long double imag;
 }complex;
 
 typedef struct tns *tnsptr;
 typedef struct tns{
-    cptr a[6];
+    cptr a[5];
 }tns;
 
 complex complex_add(complex a, complex b);
@@ -27,6 +28,7 @@ void swap(complex *a, complex *b){
     *a = *b;
     *b = tmp;
 }
+
 
 
 void FFT(cptr v,int inv, int len){
@@ -54,8 +56,8 @@ void FFT(cptr v,int inv, int len){
         for (int i=0; i<len; i++){
             v[i].real /= len;
             v[i].imag /= len;
-            v[i].real = floor(v[i].real + 0.5);
-            v[i].imag = floor(v[i].imag + 0.5);
+            v[i].real = floor(v[i].real+0.5);
+            v[i].imag = floor(v[i].imag+0.5);
         }
     }
 }
@@ -100,18 +102,19 @@ tnsptr mut(cptr a1, cptr a2, cptr a3, cptr b1, cptr b2, cptr b3, int len_a , int
         c5[i] = complex_mul(a3[i], b3[i]);
     }
 
-    FFT(c1, 1, n);
-    FFT(c2, 1, n);
-    FFT(c3, 1, n);
-    FFT(c4, 1, n);
-    FFT(c5, 1, n);
-
     free(a1);
     free(a2);
     free(a3);
     free(b1);
     free(b2);
     free(b3);
+
+    FFT(c1, 1, n);
+    FFT(c2, 1, n);
+    FFT(c3, 1, n);
+    FFT(c4, 1, n);
+    FFT(c5, 1, n);
+
 
     tnsptr c = (tnsptr)malloc(sizeof(tns));
     c->a[0] = c1;
@@ -125,11 +128,15 @@ tnsptr mut(cptr a1, cptr a2, cptr a3, cptr b1, cptr b2, cptr b3, int len_a , int
 
 int main(){
 	int n,m;
-	// scanf("%d%d",&n,&m);
-    // n++;
-    // m++;
-    n=1000000;
-    m=1000000;
+    if(test){
+        scanf("%d%d",&n,&m);
+        n++;
+        m++;
+    }
+    else{
+        n=1000000;
+        m=1000000;
+    }
 
     cptr a1= (cptr)malloc(sizeof(complex) * n);
     cptr a2= (cptr)malloc(sizeof(complex) * n);
@@ -141,8 +148,8 @@ int main(){
 
     int tmp;
     for (int i = 0; i < n; ++i){
-        // scanf("%d",&tmp);
-        tmp=1000000;
+        if(test) scanf("%d",&tmp);
+        else tmp=1000000;
         a1[i].real = tmp&255;
         tmp>>=8;
         a2[i].real = tmp&255;
@@ -153,8 +160,8 @@ int main(){
         a3[i].imag = 0;
     }
     for (int i = 0; i < m; ++i){
-        // scanf("%d",&tmp);
-        tmp=1000000;
+        if(test) scanf("%d",&tmp);
+        else tmp=1000000;
         b1[i].real = tmp&255;
         tmp>>=8;
         b2[i].real = tmp&255;
@@ -164,14 +171,6 @@ int main(){
         b2[i].imag = 0;
         b3[i].imag = 0;
     }
-    // for (int i = 0; i < n; ++i){
-    // 	printf("%d ",(int)a[i].real);
-    // }
-    // printf("\n");
-    // for (int i = 0; i < m; ++i){
-    // 	printf("%d ",(int)b[i].real);
-    // }
-    // printf("\n");
 
     tns *c = mut(a1, a2, a3, b1, b2, b3, n, m);
 
@@ -181,17 +180,17 @@ int main(){
     cptr c4 = c->a[3];
     cptr c5 = c->a[4];
 
-    long long int d1=0,d2=0,d3=0,d4=0,d5=0;
+    unsigned long long int d1=0,d2=0,d3=0,d4=0,d5=0;
     
     for (int i = 0; i < n+m-1; ++i){
-    	d1^= (long long int)c1[i].real;
-        d2^= (long long int)c2[i].real;
-        d3^= (long long int)c3[i].real;
-        d4^= (long long int)c4[i].real;
-        d5^= (long long int)c5[i].real;
+    	d1^= (unsigned long long int)c1[i].real;
+        d2^= (unsigned long long int)c2[i].real;
+        d3^= (unsigned long long int)c3[i].real;
+        d4^= (unsigned long long int)c4[i].real;
+        d5^= (unsigned long long int)c5[i].real;
     }
 
-    long long int res=d1;
+    unsigned long long int res=d1;
     res+=d2<<8;
     res+=d3<<16;
     res+=d4<<24;
