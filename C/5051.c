@@ -3,15 +3,15 @@
 #include <string.h>
 #include <math.h>
 #include <malloc.h>
-//aasaa
+
 const double PI = acos(-1);
-asdad
+
 typedef struct complex *cptr;
 typedef struct complex{
     double real;
     double imag;
 }complex;
-//nn
+
 complex complex_add(complex a, complex b);
 complex complex_sub(complex a, complex b);
 complex complex_mul(complex a, complex b);
