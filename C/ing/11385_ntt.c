@@ -8,7 +8,7 @@
 
 // const int A = 119, B = 23, P = A << B | 1, R = 3;
 
-int crt(int x, int y, int p1, int p2, int r1, int r2){
+int crt(int x, int y, int p1, int p2){
     int x = (long long)a * d % P * 119 % P;
     int y = (long long)b * c % P * 119 % P;
     return (x + y) % P;
