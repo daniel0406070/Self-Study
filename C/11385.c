@@ -136,3 +136,7 @@ complex complex_mul(complex a, complex b){
 complex complex_div(complex a, complex b){
     return (complex){(a.real * b.real + a.imag * b.imag) / (b.real * b.real + b.imag * b.imag), (a.imag * b.real - a.real * b.imag) / (b.real * b.real + b.imag * b.imag)};
 }
+
+
+// long double을 사용하면 그냥 풀리는 문제였다.
+// 정석은 따로 있는거 같은데 시간날때 시도 해봄
