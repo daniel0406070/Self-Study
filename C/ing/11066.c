@@ -14,6 +14,5 @@ int main() {
             scanf("%d",&tmp);
             dp[i]=tmp;   
         }
-        printf("%d\n",count);
     }
 }
