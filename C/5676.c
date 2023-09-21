@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX 100
+#define MAX 100002
 
 typedef struct segtree *segtreeptr;
 typedef struct segtree{
@@ -51,7 +51,8 @@ void update_seg(segtreeptr seg,int idx, int val){
             }
         }
         else{
-            seg->seg[idx]=-1;
+            if (seg->seg[idx])seg->seg[idx]*=-1;
+            else seg->seg[idx]=a;
             while (idx!=1){
                 idx/=2;
                 seg->seg[idx]=seg->seg[idx*2]*seg->seg[idx*2+1];
@@ -95,7 +96,7 @@ int main(){
                 update_seg(&aseg,x-1,y);
             }
             else{
-                a=print_seg(&aseg,x,y,0,aseg.len,1);
+                a=print_seg(&aseg,x,y,1,aseg.len,1);
                 if(a>0) printf("+");
                 else if(a<0) printf("-");
                 else printf("0");
