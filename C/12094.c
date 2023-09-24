@@ -5,6 +5,17 @@
 int n, max;
 int hi[11]={0,};
 
+int check_same(int t[][25], int tmp[][25]){
+	for(int i=1; i<=n; i++){
+		for(int j=1; j<=n; j++){
+			if (t[i][j]!=tmp[i][j]) return 1;
+		}
+	}
+	return 0;
+}
+
+
+
 void back(int d,int t[][25])
 {
 	int i,j,k;
@@ -47,7 +58,10 @@ void back(int d,int t[][25])
 			}
 		}
 	}
-	if(tmp_hi>hi[d]) back(d+1,tmp);
+	if(tmp_hi>hi[d]){
+		if (check_same(tmp,t)) back(d+1,tmp);
+		else max=max>tmp_hi? max:tmp_hi;
+	}
 
 	memset(tmp,0,sizeof(tmp));
 	memset(chk,0,sizeof(chk));
@@ -70,7 +84,10 @@ void back(int d,int t[][25])
 			}
 		}
 	}
-	if(tmp_hi>hi[d]) back(d+1,tmp);
+	if(tmp_hi>hi[d]){
+		if (check_same(tmp,t)) back(d+1,tmp);
+		else max=max>tmp_hi? max:tmp_hi;
+	}
 
 	memset(tmp,0,sizeof(tmp)); 
 	memset(chk,0,sizeof(chk));
@@ -93,7 +110,10 @@ void back(int d,int t[][25])
 			}
 		}
 	}
-	if(tmp_hi>hi[d]) back(d+1,tmp);
+	if(tmp_hi>hi[d]){
+		if (check_same(tmp,t)) back(d+1,tmp);
+		else max=max>tmp_hi? max:tmp_hi;
+	}
 
 	memset(tmp,0,sizeof(tmp));  
 	memset(chk,0,sizeof(chk));
@@ -116,7 +136,11 @@ void back(int d,int t[][25])
 			}
 		}
 	}
-	if(tmp_hi>hi[d]) back(d+1,tmp);
+	if(tmp_hi>hi[d]){
+		if (check_same(tmp,t)) back(d+1,tmp);
+		else max=max>tmp_hi? max:tmp_hi;
+	}
+
 
 }
 
