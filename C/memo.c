@@ -1,115 +1,138 @@
-#define MAX_SIZE 50
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <malloc.h>
+#define test 0
 
-// 구조체 선언
-typedef struct {
-    int data;
-}element;
+const long double PI = acosl(-1.L);
 
-typedef struct node* nodePointer;
-typedef struct node {
-    nodePointer leftnext;
-    element data;
-    nodePointer rightnext;
-}node;
+typedef struct complex *cptr;
+typedef struct complex{
+    long double real;
+    long double imag;
+}complex;
 
-// 함수 선언
-void insertNode(nodePointer* node, nodePointer newnode);
-void printNODE_left(nodePointer h);
-void printNODE_right(nodePointer h);
-void mergeNODE(nodePointer* a, nodePointer* b);
+complex complex_add(complex a, complex b);
+complex complex_sub(complex a, complex b);
+complex complex_mul(complex a, complex b);
+complex complex_div(complex a, complex b);
 
-int main(void) {
-    FILE* fp1 = fopen("in1.txt", "r");
-    FILE* fp2 = fopen("in2.txt", "r");
-
-    nodePointer NODE1=NULL;
-    nodePointer NODE2=NULL;
-
-    int input;
-
-    while (fscanf(fp1, "%d", &input) != EOF) {
-        nodePointer temp;
-        temp = (nodePointer)malloc(sizeof(struct node));
-        element data_element;
-        data_element.data = input;
-
-        temp->leftnext = temp;
-        temp->rightnext = temp;
-        temp->data = data_element;
-
-        insertNode(&NODE1, temp);
-    }
-
-    while (fscanf(fp2, "%d", &input) != EOF) {
-        nodePointer temp;
-        temp = (nodePointer)malloc(sizeof(struct node));
-        element data_element;
-        data_element.data = input;
-
-        temp->leftnext = temp;
-        temp->rightnext = temp;
-        temp->data = data_element;
-
-        insertNode(&NODE2, temp);
-    }
-
-    printNODE_left(NODE1);
-    printNODE_right(NODE1);
-    printNODE_left(NODE2);
-    printNODE_right(NODE2);
-
-    mergeNODE(&NODE1, &NODE2);
-
-    printNODE_left(NODE1);
-    printNODE_right(NODE1);
+void swap(complex *a, complex *b){
+    complex tmp = *a;
+    *a = *b;
+    *b = tmp;
 }
 
-void insertNode(nodePointer* root, nodePointer newnode) {
-    nodePointer node = *root;
-    if (!node) {
-        *root = newnode;
-        return;
+complex w[1048577];
+
+void FFT(cptr v,int inv, int len){
+
+    for(int i=1, j=0; i<len; i++){
+        int bit = len>>1;
+        while (!((j ^= bit) & bit)) bit >>= 1;
+        if (i < j) {
+            swap(&v[i], &v[j]);
+        }
     }
-    newnode->leftnext = node;
-    newnode->rightnext = node->rightnext;
-    node->rightnext->leftnext = newnode;
-    node->rightnext = newnode;
+    for (unsigned int s = 2; s <= len; s *= 2) {
+        for (unsigned int i = 0; i < s/2; i++) {
+            long double t = 2*PI*i/s * (inv? -1 : 1);
+            w[i] = (complex){cosl(t), sinl(t)};
+        }
+        for (unsigned int i = 0; i < len; i += s) {
+            for (unsigned int j = 0; j < s/2; j++) {
+                complex tmp = complex_mul(v[i + j + s/2], w[j]);
+                v[i + j + s/2] = complex_sub(v[i + j], tmp);
+                v[i + j] = complex_add(v[i + j],tmp);
+            }
+        }
+    }
+    if (inv)
+        for (unsigned int i = 0; i < len; i++){
+            v[i].real /= len;
+            v[i].imag /= len;
+        }
+            
 }
 
-void printNODE_left(nodePointer h) {
-    nodePointer current = h->leftnext;
+cptr mut(cptr a, cptr b, int len_a , int len_b){  
+    int n = 1;
+    while(n < len_a+1 || n < len_b+1) n *= 2;
+    n *= 2;
+    a = (cptr)realloc(a, sizeof(complex) * n);
+    b = (cptr)realloc(b, sizeof(complex) * n);
+	memset(a+len_a,0,sizeof(complex)*(n-len_a));
+	memset(b+len_b,0,sizeof(complex)*(n-len_b));
+    
+    cptr c = (cptr)malloc(sizeof(complex) * n);
 
-    printf("%d ", h->data.data);
-    while (current != h) {
-        printf("%d ", current->data.data);
-        current = current->leftnext;
+    FFT(a, 0, n);
+    FFT(b, 0, n);
+
+    for(int i=0; i<n; i++){
+        c[i] = complex_mul(a[i], b[i]);
     }
-    printf("\n");
+
+    FFT(c, 1, n);
+
+    return c;
 }
 
-void printNODE_right(nodePointer h) {
-    nodePointer current = h->rightnext;
-
-    while (current != h) {
-        printf("%d ", current->data.data);
-        current = current->rightnext;
+int main(){
+	int n,m;
+	if(test){
+        scanf("%d %d",&n,&m);
+        n++;
+        m++;
     }
-    printf("%d ", h->data.data);
-    printf("\n");
+    else{
+        n=1000000;
+        m=n;
+    }
+
+    cptr a = (cptr)malloc(sizeof(complex) * n);
+    cptr b = (cptr)malloc(sizeof(complex) * m);
+
+    int tmp;
+    for (int i = 0; i < n; ++i){
+    	if(test) scanf("%d",&tmp);
+        else tmp=1000000;
+        a[i].real = tmp;
+        a[i].imag = 0;
+    }
+    for (int i = 0; i < m; ++i){
+    	if(test) scanf("%d",&tmp);
+        else tmp=1000000;
+        b[i].real = tmp;
+        b[i].imag = 0;
+    }
+
+    cptr c=mut(a,b,n,m);
+
+    unsigned long long res=0;
+    for (int i = 0; i < n+m-1; ++i){
+    	res^=(unsigned long long)(c[i].real + (c[i].real > 0? 0.5L: -0.5L));
+    }
+    printf("%lld\n",res);
+
+    free(c);
+	
 }
 
-void mergeNODE(nodePointer* ta, nodePointer* tb) {
-    nodePointer a = *ta;
-    nodePointer b = *tb;
-    nodePointer temp;
 
+complex complex_add(complex a, complex b){
+    return (complex){a.real + b.real, a.imag + b.imag};
+}
 
-    a->rightnext->leftnext = b;
-    b->rightnext->leftnext = a;
-    temp = a->rightnext;
-    a->rightnext = b->rightnext;
-    b->rightnext = temp;
+complex complex_sub(complex a, complex b){
+    return (complex){a.real - b.real, a.imag - b.imag};
+}
+
+complex complex_mul(complex a, complex b){
+    return (complex){a.real * b.real - a.imag * b.imag, a.real * b.imag + a.imag * b.real};
+}
+
+complex complex_div(complex a, complex b){
+    return (complex){(a.real * b.real + a.imag * b.imag) / (b.real * b.real + b.imag * b.imag), (a.imag * b.real - a.real * b.imag) / (b.real * b.real + b.imag * b.imag)};
 }
