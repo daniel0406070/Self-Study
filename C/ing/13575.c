@@ -37,7 +37,7 @@ int main(){
 
     int d2 = 0;
     while((1<<d2) <= k) d2++;
-    int len=(a[n-1] + 1);
+    int len=1048576;
 
     cptr c=(cptr)malloc(sizeof(complex) * len);
     memset(c, 0, sizeof(complex) * len);
@@ -51,28 +51,19 @@ int main(){
 
     
     for(int i=0; i<d2; i++){
-        int y=1;
-        while(y < len+1) y *= 2;
-        y *= 2;
-        len = y;
-
-        c=(cptr)realloc(c, sizeof(complex) * len);
-        ans=(cptr)realloc(ans, sizeof(complex) * len);
-
         FFT(c, 0, len);
-
+    
         if(k & (1<<i)){
             FFT(ans, 0, len);
-            for(int i=0; i<len; i++){
-                ans[i] = complex_mul(ans[i], c[i]);
+            for(int j=0; j<len; j++){
+                ans[j] = complex_mul(ans[j], c[j]);
             }
             FFT(ans, 1, len);
         }
 
-        for(int i=0; i<len; i++){
-            c[i] = complex_mul(c[i], c[i]);
+        for(int j=0; j<len; j++){
+            c[j] = complex_mul(c[j], c[j]);
         }
-
         FFT(c, 1, len);
     }
 
@@ -120,7 +111,13 @@ void FFT(cptr v,int inv, int len){
     if (inv){
         for (int i=0; i<len; i++){
             v[i].real /= len;
+            v[i].imag /= len;
             v[i].real = floor(v[i].real + 0.5);
+            v[i].imag = floor(v[i].imag + 0.5);
+            if(v[i].real) v[i].real = 1;
+            else v[i].real = 0;
+            if(v[i].imag) v[i].imag = 1;
+            else v[i].imag = 0;
         }
     }
 }
