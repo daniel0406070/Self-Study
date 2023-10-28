@@ -4,7 +4,6 @@
 #include <math.h>
 #include <malloc.h>
 
-#define size 1000
 const double PI = acos(-1);
 
 typedef struct complex *cptr;
@@ -20,19 +19,17 @@ complex complex_div(complex a, complex b);
 
 void swap(complex *a, complex *b);
 void FFT(cptr v,int inv, int len);
-void mut(cptr a, cptr b, cptr c);
 
 int compare(const void *a, const void *b){
     return *(int*)a - *(int*)b;
 }
 
 
-
 int main(){
     int n,k;
     scanf("%d %d", &n, &k);
 
-    int *a = (int*)malloc(sizeof(int) * n);
+    int a[1001];
     for(int i=0; i<n; i++){
         scanf("%d", &a[i]);
     }
@@ -40,42 +37,52 @@ int main(){
 
     int d2 = 0;
     while((1<<d2) <= k) d2++;
-    cptr c[d2];
+    int len=(a[n-1] + 1);
 
-
-    c[0] = (cptr)malloc(sizeof(complex) * size);
-    memset(c[0], 0, sizeof(complex) * size);
+    cptr c=(cptr)malloc(sizeof(complex) * len);
+    memset(c, 0, sizeof(complex) * len);
     for(int i=0; i<n; i++){
-        c[0][a[i]].real = 1;
+        c[a[i]].real = 1;
     }
 
-    FFT(c[0], 0, size);
-    for(int i=1; i<d2; i++){
-        c[i] = (cptr)malloc(sizeof(complex) * size);
-        mut(c[i-1], c[i-1],c[i]);
-    }
-
-    cptr ans = (cptr)malloc(sizeof(complex) * size);
-    memset(ans, 0, sizeof(complex) * size);
+    cptr ans=(cptr)malloc(sizeof(complex) * len);
+    memset(ans, 0, sizeof(complex) * len);
     ans[0].real = 1;
 
+    
     for(int i=0; i<d2; i++){
-        if(k & (1<<i)){
-            mut(ans, c[i], ans);
-        }
-    }
-    FFT(ans, 1, size);
+        int y=1;
+        while(y < len+1) y *= 2;
+        y *= 2;
+        len = y;
 
-    for(int i=0; i<size; i++){
+        c=(cptr)realloc(c, sizeof(complex) * len);
+        ans=(cptr)realloc(ans, sizeof(complex) * len);
+
+        FFT(c, 0, len);
+
+        if(k & (1<<i)){
+            FFT(ans, 0, len);
+            for(int i=0; i<len; i++){
+                ans[i] = complex_mul(ans[i], c[i]);
+            }
+            FFT(ans, 1, len);
+        }
+
+        for(int i=0; i<len; i++){
+            c[i] = complex_mul(c[i], c[i]);
+        }
+
+        FFT(c, 1, len);
+    }
+
+    for(int i=0; i<len; i++){
         if(ans[i].real > 0.5){
             printf("%d ", i);
         }
     }
 
-    free(a);
-    for(int i=0; i<d2; i++){
-        free(c[i]);
-    }
+    free(c);
     free(ans);
     return 0;
 }
@@ -117,13 +124,6 @@ void FFT(cptr v,int inv, int len){
         }
     }
 }
-
-void mut(cptr a, cptr b, cptr c){ 
-    for(int i=0; i<size; i++){
-        c[i] = complex_mul(a[i], b[i]);
-    }
-}
-
 
 
 complex complex_add(complex a, complex b){
