@@ -5,7 +5,7 @@
 int slimes[200004][3]={0,};
 
 int find(int a){
-    if(slimes[a][0]==0){
+    if(slimes[a][0]==a){
         return a;
     }
     else{
@@ -32,6 +32,7 @@ int main(){
     scanf("%d %d", &n, &m);
 
     for(int i=1; i<=n; i++){
+        slimes[i][0]=i;
         slimes[i][1]=1;
     }
 
@@ -43,16 +44,17 @@ int main(){
         int pb=find(b);
 
         if(pa==pb){
+            printf("%lld\n", ans+n);
             continue;
         }
-        ans-=slimes[pa][1]*(slimes[pa][1]-1)/2;
-        ans-=slimes[pb][1]*(slimes[pb][1]-1)/2;
+        ans-=1LL*slimes[pa][1]*(slimes[pa][1]-1)/2;
+        ans-=1LL*slimes[pb][1]*(slimes[pb][1]-1)/2;
 
 
         merge(a,b);
 
-
-        ans+=slimes[pa][1]*(slimes[pa][1]-1)/2;
+        pa=find(a);
+        ans+=1LL*slimes[pa][1]*(slimes[pa][1]-1)/2;
         
         printf("%lld\n", ans+n);
     }
