@@ -2,6 +2,7 @@
 //이를 통해 그사이를 건너 뛸수 있다.
 // n은 text의 길이, m은 pattern의 길이 (strlen 반복 방지)
 
+//int kmp는 char*를 int*로 교체해서 사용하면 됨
 #include <stdio.h>
 #include <string.h>
 
@@ -9,27 +10,25 @@
 
 int f[kmp_size]={0,};
 
-void FailureFunction(int m, char* pattern)
-{
+void FailureFunction(int m, char* pattern){
 
 	for (int i = 1, j = 0; i < m; i++) {
 		while (j > 0 && pattern[i] != pattern[j]) j = f[j - 1];
 
-		if (pattern[i] == pattern[j]) {
-			f[i] = ++j;
-		} else {
-			f[i] = 0;
-		}
+		if (pattern[i] == pattern[j]) f[i] = ++j;
+        else f[i] = 0;
 	}
 }
 
+//모든 부분을 탐색
 void kmp(int n, int m, char* text, char* pattern){
 
 	int i = 0;
 	int j = 0;
+
     int kmp_idx_arr[kmp_size]={0,};
     int kmp_count=0;
-	
+
     for(int i=0; i<n; i++){
         while (j > 0 && text[i] != pattern[j]) j = f[j - 1];
 
@@ -38,9 +37,8 @@ void kmp(int n, int m, char* text, char* pattern){
                 kmp_idx_arr[kmp_count]=i-j;
                 (kmp_count)++;
                 j=f[j];
-            }else{
-                j++;
             }
+            else j++;
         }
     }
 
@@ -50,4 +48,20 @@ void kmp(int n, int m, char* text, char* pattern){
     // } 
     // kmp_count와 kmp_idx_arr는 전역 변수로 쓰던지 알아서
 
+}
+
+//첫번째 부분까지만 탐색
+int kmp(int n, int m, char* text, char* pattern){
+
+	int i = 0;
+	int j = 0;
+    for(int i=0; i<n; i++){
+        while (j > 0 && text[i] != pattern[j]) j = f[j - 1];
+
+        if (text[i] == pattern[j]) {
+            if(j==m-1) return i-j;
+            else j++;
+        }
+    }
+    return -1;
 }
