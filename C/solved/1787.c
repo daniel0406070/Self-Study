@@ -26,17 +26,24 @@ int main(){
 
     FailureFunction(n, s);
 
-    int ans = 0;
+    long long int ans = 0;
     dp[0] = 0;
     for(int i=1; i<n; i++){
-        dp[i] = dp[f[i-1]] + 1;
-        ans += dp[i];
+        if(f[i]==0) dp[i] = 0;
+        else{
+            if (dp[f[i]-1] == 0) dp[i] = f[i];
+            else dp[i] = dp[f[i]-1];
+
+        }
+
+        if(dp[i] > 0) ans += i-dp[i]+1;
     }
 
-    for(int i=0; i<n; i++) printf("%d ", f[i]);
-    printf("\n");
-    for(int i=0; i<n; i++) printf("%d ", dp[i]);
-    printf("\n");
+    // for(int i=0; i<n; i++) printf("%d ", dp[i]);
+    // printf("\n");
 
-    printf("%d", ans);
+    // for(int i=0; i<n; i++) printf("%d ", f[i]);
+    // printf("\n");
+
+    printf("%lld", ans);
 }
