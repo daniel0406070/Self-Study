@@ -1,9 +1,6 @@
 "use strict";
-const getInfoText = (name, age) => {
-    const nameText = name.substr(0, 10);
-    const ageText = age >= 35 ? 'senior' : 'junior';
-    return `name : ${nameText} age: ${ageText}`;
-};
-const v1 = getInfoText('mike', 23);
-console.log(v1);
+var input = require('fs').readFileSync('/home/daniel/code_space/test_case/input.txt').toString().split(' ');
+var a = parseInt(input[0]);
+var b = parseInt(input[1]);
+console.log(a + b);
 //# sourceMappingURL=app.js.map

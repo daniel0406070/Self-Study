@@ -1,8 +1,11 @@
-const getInfoText: (name:string, age:number) => string = (name, age) => {
-    const nameText = name.substr(0, 10);
-    const ageText = age >= 35? 'senior' : 'junior';
-    return `name : ${nameText} age: ${ageText}`
+interface IInput {
+    (): string[];
 }
 
-const v1: string = getInfoText('mike', 23);
-console.log(v1);
+const input = ((): IInput => {
+    const line=require("readline").createInterface({input:process.stdin});
+    const lines:string[]=[];
+    line.on("line", (line:string) => lines.push(line));
+    return () => lines;
+});
+
