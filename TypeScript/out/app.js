@@ -1,12 +1,6 @@
-const readline = require('readline').createInterface({
-    input: process.stdin,
-    output: process.stdout,
-});
-
-let input = [];
-readline.on('line', (line) => {
-    input.push(line);
-}).on('close', () => {
-    console.log(solution(input));
-    process.exit();
-});
+"use strict";
+var input = require('fs').readFileSync('/home/daniel/code_space/test_case/input.txt').toString().split(' ');
+var a = parseInt(input[0]);
+var b = parseInt(input[1]);
+console.log(a + b);
+//# sourceMappingURL=app.js.map
