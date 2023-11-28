@@ -1,18 +1,13 @@
 #include <stdio.h>
 #include <math.h>
 
-typedef struct test *testPtr;
-typedef struct test{
-    int a; // 인자
-    int b; // 인자
-    testPtr next; // 자신의 포인터를 인자로 가진다.
-} test;
+int arr[300000]={0,};
 
 int main(){
-    test num;
+    int n=300000;
+    printf("%d\n",n);
 
-    test.a = 1;
-    (&test)->b = 2;
+    for(int i=0;i<n;i++) printf("%d ",i);
+
+
 }
-
-
