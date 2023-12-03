@@ -1,18 +1,13 @@
-#include <iostream>
-#include <vector>
-#include <string>
-
+#include <bits/stdc++.h>
 using namespace std;
+
+map <string, vector<int>> m;
 
 int main()
 {
-  const d = {
-    "kind": { "table": true },
-    "rows": [
-        { "userId": 1, "country": "us", "amount": 2 },
-        { "userId": 2, "amount": 1 },
-        { "userId": 2, "country": "de", "amount": 1 },
-        { "userId": 1, "country": "us" }
-    ]
-  }
+  string s = "megalusion";
+  m.insert(make_pair(s, vector<int>{1, 0})); 
+  
+  m[s][0]+=1;
+  cout << m[s].at(0) << endl;
 }
