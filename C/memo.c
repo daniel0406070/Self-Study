@@ -1,13 +1,18 @@
 #include <stdio.h>
 #include <math.h>
 
-int arr[300000]={0,};
 
 int main(){
-    int n=300000;
+    int n=32768;
+
     printf("%d\n",n);
+    for(int i=0;i<n;i++){
+        printf("100000 ");
+    }
+    printf("\n");
 
-    for(int i=0;i<n;i++) printf("%d ",i);
-
-
+    printf("%d\n",n);
+    for(int i=1;i<=n;i++){
+        printf("%d ",i);
+    }
 }
