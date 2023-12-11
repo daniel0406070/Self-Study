@@ -4,14 +4,14 @@ int n;
 char cnt[104]= {'\0',};
 int idx = 0;
 
-void hanoi(int t, char from, char tmp, char to){
+void hanoi(int t, char from, char tmp, char to){ // t개를 from에서 to로 옮김
     if(t == 1){
         printf("%c %c\n", from, to);
     }
     else{
-        hanoi(t-1, from, to, tmp);
-        printf("%c %c\n", from, to);
-        hanoi(t-1, tmp , from, to);
+        hanoi(t-1, from, to, tmp); // n-1개를 2번으로 옮김
+        printf("%c %c\n", from, to); // 1개를 3번으로 옮김
+        hanoi(t-1, tmp , from, to); // n-1개를 3번으로 옮김
     }
 }
 
