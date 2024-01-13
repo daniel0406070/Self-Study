@@ -53,6 +53,8 @@ void FFT(cptr v,int inv, int len){
     }
 }
 
+int len=0;
+
 cptr mut(cptr a, cptr b, int len_a , int len_b){  
     int n = 1;
     while(n < len_a+1 || n < len_b+1) n *= 2;
@@ -73,29 +75,46 @@ cptr mut(cptr a, cptr b, int len_a , int len_b){
 
     free(a);
     free(b);
+    len=n;
     return c;
 }
 
-cptr mut(cptr a, int len_a){  
-    int n = 1;
-    while(n < len_a+1) n *= 2;
-    n *= 2;
-    
-    a = (cptr)realloc(a, sizeof(complex) * n);
-	memset(a+len_a,0,sizeof(complex)*(n-len_a));
-    
-    cptr c = (cptr)malloc(sizeof(complex) * n);
+char a[500002], b[500002];
+cptr a_rev, b_org;
+cptr c;
 
-    FFT(a, 0, n);
+int main(){
+    scanf("%s", a);
+    scanf("%s", b);
 
-    for(int i=0; i<n; i++){
-        c[i] = complex_mul(a[i], a[i]);
+    int len_a = strlen(a);
+    int len_b = strlen(b);
+    a_rev = (cptr)malloc(sizeof(complex) * len_a);
+    b_org = (cptr)malloc(sizeof(complex) * 2 * len_b);
+
+    for(int i=0; i<len_a; i++){
+        a_rev[i].real = a[len_a - i - 1]-'0';
+        a_rev[i].imag = 0;
+    }
+    for(int i=0; i<len_b; i++){
+        b_org[i].real = b[i]-'0';
+        b_org[i].imag = 0;
+    }
+    for(int i=len_b; i<2*len_b-1; i++){
+        b_org[i].real = b[i-len_b]-'0';
+        b_org[i].imag = 0;
     }
 
-    FFT(c, 1, n);
+    c= mut(a_rev, b_org, len_a, len_b);
 
-    free(a);
-    return c;
+    long long int max = 0;
+    for(int i=0; i<len; i++){
+        if(max < (long long int)c[i].real) max = (long long int)c[i].real;
+    }
+
+    printf("%lld", max);
+    free(c);
+    
 }
 
 
