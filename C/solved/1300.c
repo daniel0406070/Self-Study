@@ -21,15 +21,10 @@ int main(){
             cnt += (mid/i>n)?n:mid/i;
         }
 
-        if(cnt<k){
-            low = mid+1;
-        }
-        else{
-            high = mid-1;
-        }
+        if(cnt<k) low = mid+1;
+        else high = mid-1;
 
-        
-
+    
         if(low>high){
             printf("%lld",low);
             break;
