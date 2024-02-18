@@ -11,21 +11,23 @@ int main(){
     if(op == '+'){
         if(len_a == len_b){
             a[0] = '2';
-            for(int i = 1; i < len_a; i++){
-                a[i] = '0';
-            }
-            a[len_a] = '\0';
-        }else{
+            printf("%s", a);
+        }
+        else{
             if(len_a > len_b){
                 a[len_a - len_b] = '1';
-                for(int i = len_a - len_b + 1; i < len_a; i++)a[i] = '0';
-                a[len_a] = '\0';
-            }else{
+                printf("%s", a);
+            }
+            else{
                 b[len_b - len_a] = '1';
-                for(int i = len_b - len_a + 1; i < len_b; i++) b[i] = '0';
-                b[len_b] = '\0';
+                printf("%s", b);
             }
         }
     }
-    
+    else{
+        printf("1");
+        for(int i = 0; i < len_a + len_b - 2; i++){
+            printf("0");
+        }
+    }
 }
