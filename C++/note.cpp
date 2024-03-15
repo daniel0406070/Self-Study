@@ -1,9 +1,40 @@
-#include<bits/stdc++.h>
+#include<stdio.h>
+#include<stdlib.h>
+void funA();
+void funB();
+void funC();
 
-using namespace std;
+class funPr{
+public:
+	char* fName;
+	funPr(char* in_file)
+	{
+		fName = in_file;
+		printf("%s() start\n", fName);
+	}
+	~funPr()
+	{
+		printf("%s() end\n", fName);
+	}
+};
 
-int main(){
-    long double a = 0.1L;
-    a=a*a;
-    printf("%0.30Lf\n",a*a);
+int main()
+{
+	funPr a((char*)__FUNCTION__);
+	funA();
+}
+
+void funA()
+{
+	funPr a((char*)__FUNCTION__);
+	funB();
+}
+void funB()
+{
+	funPr a((char*)__FUNCTION__);
+	funC();
+}
+void funC()
+{
+	funPr a((char*)__FUNCTION__);
 }
