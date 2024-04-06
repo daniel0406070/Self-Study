@@ -1,7 +1,7 @@
 import sys
 import os
 
-path = "/home/daniel/code_space/binary_search_merge_submissions/"
+path = "/home/daniel/code_space/4_5_submissions/"
 print(path)
 
 if(not os.path.isdir(path+"test_case")):
@@ -69,7 +69,7 @@ for student,files in student_list.items():
         os.system("touch "+path+"test_case/"+student+'_'+ filename +".txt")
 
         os.system("g++ -o \""+path+file.split(".")[0]+"\" \""+path+file+"\"")            
-        os.system("\""+path+file.split(".")[0]+"\""+" > "+path+"test_case/"+student+'_'+ filename +".txt")
+        os.system("\""+path+file.split(".")[0]+"\""+" > "+path+"test_case/"+student+'_'+ filename +".txt"+" < "+path+"test_case/"+"input.txt")
     
 
 
