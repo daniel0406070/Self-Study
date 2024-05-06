@@ -193,3 +193,4 @@ Mkfile.old
 dkms.conf
 .vscode/settings.json
 .vscode/tasks.json
+C/memo.c
