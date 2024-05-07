@@ -1,66 +1,93 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 100002
-#define BIG(x,y) ((x)>(y)?(x):(y))
-#define SMALL(x,y) ((x)<(y)?(x):(y))
+#define ML 18
+#define MAX (1<<ML)
 
-typedef int size_i;
 typedef struct node *nptr;
 typedef struct node{
-    size_i data;
+    int data;
     nptr next;
 } node;
-
 nptr head[MAX];
-size_i dp[MAX]={0,};
-size_i queqe[MAX];
-size_i checklist[MAX]={0,};
-int front = 0, rear = 0;
+
+int n,m;
+
+int parent[MAX][ML]={0,};
+int depth[MAX]={0,};
+
+
+void insert_edge(int x, int y){
+    nptr tmp = (nptr)malloc(sizeof(struct node));
+    tmp->data = y;
+    tmp->next = head[x];
+    head[x] = tmp;
+
+    tmp = (nptr)malloc(sizeof(struct node));
+    tmp->data = x;
+    tmp->next = head[y];
+    head[y] = tmp;
+}
+
+void dp(int cur, int dep){
+    depth[cur] = dep;
+    for (nptr i = head[cur]; i != NULL; i = i->next){
+        if(i->data == parent[cur][0]) continue;
+        if (depth[i->data] == 0){
+            parent[i->data][0] = cur;
+            dp(i->data, dep+1);
+        }
+    }
+}
+
+void make_parent(){
+    dp(1, 0);
+    for (int i = 1; i < ML; i++){
+        for (int j = 1; j <= n; j++){
+            parent[j][i] = parent[parent[j][i-1]][i-1];
+        }
+    }
+}
+
+int lca(int x, int y){
+    if (depth[x] > depth[y]){
+        int tmp = x;
+        x = y;
+        y = tmp;
+    }
+
+    for (int i = ML-1; i >= 0; i--){
+        if (depth[y] - depth[x] >= (1<<i)){
+            y = parent[y][i];
+        }
+    }
+
+    if (x == y) return x;
+    for (int i = ML-1; i >= 0; i--){
+        if (parent[x][i] != parent[y][i]){
+            x = parent[x][i];
+            y = parent[y][i];
+        }
+    }
+
+
+    return parent[x][0];
+}
 
 int main(){
-    int n,m;
     scanf("%d", &n);
     
     int x,y;
     for (int i = 0; i < n-1; i++){
         scanf("%d %d", &x, &y);
-        nptr tmp = (nptr)malloc(sizeof(struct node));
-        tmp->data = y;
-        tmp->next = head[x];
-        head[x] = tmp;
-
-        tmp = (nptr)malloc(sizeof(struct node));
-        tmp->data = x;
-        tmp->next = head[y];
-        head[y] = tmp;
+        insert_edge(x,y);
     }
 
-    queqe[rear++] = 1;
-    while (front < rear){
-        int cur = queqe[front++];
-        for (nptr i = head[cur]; i != NULL; i = i->next){
-            if (dp[i->data] == 0){
-                dp[i->data] = cur;
-                queqe[rear++] = i->data;
-            }
-        }
-    }
-    dp[1] = -1;
-
+    make_parent();
+    
     scanf("%d", &m); 
     for (int i = 0; i < m; i++){
         scanf("%d %d", &x, &y);
-        
-        for (int a = x; a != -1; a = dp[a]){
-            checklist[a] = x;
-        }
-
-        for (int a = y; a != -1; a = dp[a]){
-            if (checklist[a] == x){
-                printf("%d\n", a);
-                break;
-            }
-        }
+        printf("%d\n", lca(x,y));
     }
 }
