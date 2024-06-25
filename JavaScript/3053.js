@@ -4,14 +4,14 @@ const rl = require('readline').createInterface({
 });
 
 rl.on('line', function (line) {
-    const a = parseInt(line);
-    
-    let uc = a*a*Math.PI;
-    let tc = a*a*2;
+    const input = line.split(' ').map(Number);
 
-    console.log(uc.toFixed(6));
-    console.log(tc.toFixed(6));
-
+    if(input[0]*2>=input[1]){
+        console.log('E');
+    }
+    else{
+        console.log('H');
+    }
     rl.close();
 }).on("close", function () {
     process.exit();
