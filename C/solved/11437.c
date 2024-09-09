@@ -1,22 +1,52 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define MAX 100002
-#define BIG(x,y) ((x)>(y)?(x):(y))
-#define SMALL(x,y) ((x)<(y)?(x):(y))
 
-typedef int size_i;
-typedef struct node *nptr;
-typedef struct node{
-    size_i data;
-    nptr next;
-} node;
+typedef struct link *lptr;
+typedef struct link{
+    int data;
+    lptr next;
+} link;
 
-nptr head[MAX];
-size_i dp[MAX]={0,};
-size_i queqe[MAX];
-size_i checklist[MAX]={0,};
-int front = 0, rear = 0;
+lptr head[MAX];
+int depth[MAX];
+int dp[MAX][18];
+
+void set_tree(int n, int d){
+    for (lptr cur = head[n]; cur; cur = cur->next){
+        if(dp[cur->data][0] == 0){
+            dp[cur->data][0] = n;
+            depth[cur->data] = d;
+            set_tree(cur->data, d+1);
+        }
+    }
+}
+
+int LCA(int a, int b){
+    if (depth[a] < depth[b]){
+        int tmp = a;
+        a = b;
+        b = tmp;
+    }
+
+    for (int i = 17; i >= 0; i--){
+        if (pow(2, i) <= depth[a] - depth[b]){
+            a = dp[a][i];
+        }
+    }
+
+    if (a == b) return a;
+
+    for (int i = 17; i >= 0; i--){
+        if (dp[a][i] == dp[b][i]) continue;
+        a = dp[a][i];
+        b = dp[b][i];
+    }
+
+    return dp[a][0];
+}
 
 int main(){
     int n,m;
@@ -25,42 +55,33 @@ int main(){
     int x,y;
     for (int i = 0; i < n-1; i++){
         scanf("%d %d", &x, &y);
-        nptr tmp = (nptr)malloc(sizeof(struct node));
+        lptr tmp = (lptr)malloc(sizeof(struct link));
         tmp->data = y;
         tmp->next = head[x];
         head[x] = tmp;
 
-        tmp = (nptr)malloc(sizeof(struct node));
+        tmp = (lptr)malloc(sizeof(struct link));
         tmp->data = x;
         tmp->next = head[y];
         head[y] = tmp;
     }
 
-    queqe[rear++] = 1;
-    while (front < rear){
-        int cur = queqe[front++];
-        for (nptr i = head[cur]; i != NULL; i = i->next){
-            if (dp[i->data] == 0){
-                dp[i->data] = cur;
-                queqe[rear++] = i->data;
+    dp[1][0] = -1;
+    set_tree(1, 1);
+
+    dp[1][0] = -1;
+    
+    for (int i = 1; i < 18; i++){
+        for (int j = 1; j <= n; j++){
+            if (dp[j][i-1] != -1){
+                dp[j][i] = dp[dp[j][i-1]][i-1];
             }
         }
     }
-    dp[1] = -1;
 
-    scanf("%d", &m); 
+    scanf("%d", &m);
     for (int i = 0; i < m; i++){
         scanf("%d %d", &x, &y);
-        
-        for (int a = x; a != -1; a = dp[a]){
-            checklist[a] = x;
-        }
-
-        for (int a = y; a != -1; a = dp[a]){
-            if (checklist[a] == x){
-                printf("%d\n", a);
-                break;
-            }
-        }
+        printf("%d\n", LCA(x, y));
     }
 }
