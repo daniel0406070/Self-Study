@@ -14,18 +14,18 @@
             ]
         },
         {
-            "name": "C/C++: clang 활성 파일 빌드 및 디버그",
+            "name": "C/C++: gcc 활성 파일 빌드 및 디버그",
             "type": "cppdbg",
-            "internalConsoleOptions": "openOnSessionStart",
-            "request":"launch",
+            "request" : "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
+            "args": ["<", "/home/daniel/code_space/test_case/input.txt"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "externalConsole": true,
+            "externalConsole": false,
             "environment": [],
-            "MIMode": "lldb",
-            "preLaunchTask": "C/C++: clang 활성 파일 빌드",
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "preLaunchTask": "C/C++: gcc 활성 파일 빌드",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
