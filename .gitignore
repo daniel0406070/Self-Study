@@ -195,3 +195,5 @@ dkms.conf
 .vscode/tasks.json
 C/memo.c
 python/cps
+
+python/fun.py
